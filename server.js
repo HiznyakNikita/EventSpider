@@ -64,9 +64,15 @@ var parsePage = function(html) {
     var links = $('a');
     var destinations = [];
 	$(links).each(function(i, link){
-		var attr = urlHome + $(link).attr('href');
+		var attr = $(link).attr('href');
         if (attr) {
-            destinations.push(attr);
+			if(attr.toString().indexOf("http:") === -1){
+				attr = urlHome + attr;
+				}
+			if(attr.toString().indexOf(urlHome) > -1 
+			&& attr.toString().indexOf("ua/") > -1){
+				destinations.push(attr);
+			}
         }
   });
   
