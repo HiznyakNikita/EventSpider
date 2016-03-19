@@ -1,11 +1,22 @@
 var http = require("http");
 var cheerio = require('cheerio');
 var iconv = require('iconv-lite');
+var request = require('request');
+var GoogleMapsAPI = require('googlemaps');
 
+var depth = 50;
 var knownPages = [];
 var visitedPages = [];
 var events = [];
+var locatedEvents = [];
+var publicConfig = {
+  key: 'AIzaSyBRNsKkzpE1VT_UIOoVibkcAUmSjr4SIFI',
+  stagger_time:       1000, // for elevationPath
+  encode_polylines:   false,
+  secure:             true, // use https
+};
 
+var gmAPI = new GoogleMapsAPI(publicConfig);
 
 //helper methods
 
@@ -58,7 +69,6 @@ var getNextPage = function(){
 var parsePage = function(html) {
 
 	var $ = cheerio.load(html);
-	var event = { name : "", place : "", date : ""};
 	var urlHome = "http://today.kiev.ua";
 
     var links = $('a');
@@ -78,17 +88,24 @@ var parsePage = function(html) {
   
   $('.event_cell').filter(function(){
         var data = $(this);
-        event.name = data.children().first().children().first().children().first().children().first().text().trim();
-		event.place = data.children().last().children().text().trim();
-		event.date = data.children().last().text().trim();
-		events.push(event);
-      })
+        name = data.children().first().children().first().children().first().children().first().text().trim();
+		place = data.children().last().children().text().trim();
+		date = data.children().last().text().trim();
+		if(name != '' && date != '' && place != '')
+			events.push({"name": name, "date" : date, "place" : place, location: null});
+      });
    
     return destinations;
 };
 
 var crawlPage = function(url) {
-	console.log("crawl url: " + url);
+	depth-=1;
+	if(depth == 0)
+	{
+		depth = 50;
+		console.log(locatedEvents);
+	}
+	//console.log("crawl url: " + url);
 	downloadPage(url, function(data) {
         var links = parsePage(iconv.decode(data, 'win1251'));
         knownPages = pushNewItemsToArray(knownPages.concat(links));
@@ -96,5 +113,23 @@ var crawlPage = function(url) {
     });
 }
 
+setInterval(function(){
+  if(events)
+  {
+	  var currentEvent = events.pop();
+var geocodeParams = { "address": "Киев " + currentEvent.place };
+	//console.log(geocodeParams.address);
+gmAPI.geocode(geocodeParams, function(err, result){
+	//console.log(result);
+  if(result)
+	  currentEvent.location = result.results[0].geometry.location;
+  locatedEvents.push(currentEvent);
+});
+  }
+}, 1000); 
+
 var url = "http://today.kiev.ua";
+
+
+
 crawlPage(url);
