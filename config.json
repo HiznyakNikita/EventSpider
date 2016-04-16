@@ -1,6 +1,7 @@
 {
-    "port" : 1337,
-    "mongoose": {
-        "uri": "mongodb://localhost/eventspider"
-    }
+	"port" : 1337,
+	"mongoose": {
+		"uri": "mongodb://localhost/eventspider"
+	},
+	"url" : "http://today.kiev.ua"
 }

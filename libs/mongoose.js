@@ -6,22 +6,22 @@ mongoose.connect(config.get('mongoose:uri'));
 var db = mongoose.connection;
 
 db.on('error', function (err) {
-    log.error('connection error:', err.message);
+	log.error('connection error:', err.message)
 });
+
 db.once('open', function callback () {
-    log.info("Connected to DB!");
+	log.info("Connected to DB!");
 });
 
 var Schema = mongoose.Schema;
 
 // Schemas
 var Events = new Schema({
-    name : String,
+	name : String,
 	place : String,
 	date : String,
-    eventLocation: { lat: Number, lng: Number }
+	eventLocation: { lat: Number, lng: Number }
 });
-
 
 var EventModel = mongoose.model('Event', Events);
 
