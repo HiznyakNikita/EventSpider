@@ -1,9 +1,12 @@
 ﻿var http = require('http');
+
+var iconv = require('iconv-lite');
+var mongoose = require('mongoose');
+
 var crawler = require('./libs/crawler');
 var config  = require('./libs/config');
-var iconv = require('iconv-lite');
 var EventModel = require('./libs/mongoose').EventModel;
-var mongoose = require('mongoose');
+
 
 var Event = mongoose.model('Event', EventModel);
 var events = [];
@@ -25,15 +28,15 @@ var routing = {
 
 //define types
 var types = {
-  object: function(obj) { return JSON.stringify(obj); },
-  string: function(str) { return str; },
-  undefined: function() { return 'not found'; },
-  function: function(fn, req, res) { return fn(req, res) + ''; },
+	object: function(obj) { return JSON.stringify(obj); },
+	string: function(str) { return str; },
+	undefined: function() { return 'not found'; },
+	function: function(fn, req, res) { return fn(req, res) + ''; },
 };
 
 //creating server 
 http.createServer( function (req, res) {
-  var data = routing[req.url],
-  result = types[typeof(data)](data, req, res);
-  res.end(result);
+	var data = routing[req.url],
+	result = types[typeof(data)](data, req, res);
+	res.end(result);
 }).listen(8081);

@@ -1,0 +1,29 @@
+{
+  "name": "EventSpider",
+  "version": "1.0.0",
+  "description": "",
+  "main": "crawler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HiznyakNikita/EventSpider.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HiznyakNikita/EventSpider/issues"
+  },
+  "homepage": "https://github.com/HiznyakNikita/EventSpider",
+  "dependencies": {
+    "cheerio": "^0.20.0",
+    "googlemaps": "^1.6.0",
+    "http": "0.0.0",
+    "iconv-lite": "^0.4.13",
+    "mongoose": "^4.4.17",
+    "nconf": "^0.8.4",
+    "request": "^2.72.0",
+    "winston": "^2.2.0"
+  }
+}
